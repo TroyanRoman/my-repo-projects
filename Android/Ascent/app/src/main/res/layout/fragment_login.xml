@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+
+            android:src="@drawable/ic_login_scr_logo1" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_weight="4">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="40dp"
+            android:layout_height="36dp"
+            android:scaleType="fitCenter"
+            android:elevation="8dp"
+            android:textSize="11sp"
+            android:adjustViewBounds="true"
+            android:textAllCaps="false"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Continue with Strava"
+            android:background="@drawable/button_background"
+            android:layout_gravity="center_horizontal"
+            />
+
+</LinearLayout>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

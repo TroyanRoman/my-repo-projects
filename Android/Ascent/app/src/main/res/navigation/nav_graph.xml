@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/helloFragment">
+
+    <fragment
+        android:id="@+id/helloFragment"
+        android:name="com.skillbox.ascent.ui.HelloFragment"
+        android:label="HelloFragment" >
+        <action
+            android:id="@+id/action_helloFragment_to_onBoardingFragment"
+            app:destination="@id/onBoardingFragment" />
+        <action
+            android:id="@+id/action_helloFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/onBoardingFragment"
+        android:name="com.skillbox.ascent.ui.fragments.onboarding.OnBoardingFragment"
+        android:label="OnBoardingFragment" >
+        <action
+            android:id="@+id/action_onBoardingFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.skillbox.ascent.ui.fragments.login_fragment.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_profileFragment2"
+            app:destination="@id/profileFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment2"
+        android:name="com.skillbox.ascent.ui.fragments.profile_fragment.ProfileFragment"
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment2_to_activitiesFragment2"
+            app:destination="@id/activitiesFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/activitiesFragment2"
+        android:name="com.skillbox.ascent.ui.fragments.sport_activities.ActivitiesFragment"
+        android:label="ActivitiesFragment" >
+        <action
+            android:id="@+id/action_activitiesFragment2_to_createActivityFragment"
+            app:destination="@id/createActivityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createActivityFragment"
+        android:name="com.skillbox.ascent.ui.fragments.sport_activities.add_activity.CreateActivityFragment"
+        android:label="CreateActivityFragment" >
+        <action
+            android:id="@+id/action_createActivityFragment_to_activitiesFragment2"
+            app:destination="@id/activitiesFragment2" />
+    </fragment>
+</navigation>

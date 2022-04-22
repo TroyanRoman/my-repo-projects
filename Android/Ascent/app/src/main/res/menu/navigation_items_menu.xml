@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profileFragment"
+        android:checked="true"
+        android:enabled="true"
+        android:icon="@drawable/home_icn"
+        android:title="@string/profile" />
+    <item
+        android:id="@+id/activitiesFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_activities_icn"
+        android:title="@string/activities" />
+</menu>
