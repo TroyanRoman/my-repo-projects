@@ -3,30 +3,30 @@ package com.skillbox.ascent.di
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.skillbox.ascent.oauth_data.AuthConfig
 import com.skillbox.ascent.oauth_data.models.TokenModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import net.openid.appauth.*
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.suspendCoroutine
 
 @Singleton
-class AppAuth @Inject constructor(
-    @ApplicationContext private val context : Context?,
-    private val authTokenPreference: AuthTokenPreference) {
+class AppAuth @Inject constructor() {
 
     private val serviceConfiguration = AuthorizationServiceConfiguration(
         Uri.parse(AuthConfig.AUTH_URI),
         Uri.parse(AuthConfig.TOKEN_URI)
     )
-    private val callbackUri = Uri.parse(AuthConfig.CALLBACK_URL)
+
 
     fun getAuthRequest(): AuthorizationRequest {
 
-        val redirectUri = Uri.parse(AuthConfig.CALLBACK_URL)
-
+        val redirectUri = AuthConfig.CALLBACK_URL.toUri()
 
         val requestBuilder = AuthorizationRequest.Builder(
             serviceConfiguration,
@@ -36,22 +36,25 @@ class AppAuth @Inject constructor(
         )
             .setScope(AuthConfig.SCOPE)
             .build()
-        Log.d("Auth","get Auth request summonned with builder = $requestBuilder ")
+        Log.d("Auth", "get Auth request summonned with builder = $requestBuilder ")
         return requestBuilder
     }
 
     fun getRefreshRequest(refreshToken: String): TokenRequest {
+        Log.d("Auth", "refresh started ")
 
+        val tokenRequest =
+            TokenRequest.Builder(
+                serviceConfiguration,
+                AuthConfig.CLIENT_ID
 
-        return TokenRequest.Builder(
-            serviceConfiguration,
-            AuthConfig.CLIENT_ID
-        ).setRedirectUri(callbackUri)
-            .setGrantType(GrantTypeValues.REFRESH_TOKEN)
-            .setScopes(AuthConfig.SCOPE)
-            .setRefreshToken(refreshToken)
-            .build()
+            ).setGrantType(GrantTypeValues.REFRESH_TOKEN)
 
+                .setScopes(AuthConfig.SCOPE)
+                .setRefreshToken(refreshToken)
+                .build()
+        Log.d("Auth", "refresh token Request = $tokenRequest ")
+        return tokenRequest
     }
 
     suspend fun performTokenRequest(
@@ -59,28 +62,31 @@ class AppAuth @Inject constructor(
         tokenRequest: TokenRequest,
     ): TokenModel {
         return suspendCoroutine { continuation ->
-
+            Log.d("Auth", "Auth service performTokenRequest = $authService")
             authService.performTokenRequest(
                 tokenRequest,
                 getClientAuthentication()
             ) { response, ex ->
-                Log.d("Auth","response = ${response.toString()}")
+                Log.d("Auth", "response = ${response.toString()}")
 
                 when {
                     response != null -> {
                         val token = TokenModel(
                             accessToken = response.accessToken.orEmpty(),
                             refreshToken = response.refreshToken.orEmpty(),
-                            idToken = response.idToken.orEmpty()
+                            expTime = response.accessTokenExpirationTime ?: 0
                         )
-                        authTokenPreference.setStoredData(token)
-                        Log.d("Auth","response = $token")
+
+                        Log.d("Auth", "response = $token")
+
                         continuation.resumeWith(Result.success(token))
                     }
                     ex != null -> {
+                        Log.d("Auth", "resume with error =  $ex")
                         continuation.resumeWith(Result.failure(ex))
-                    }
+                        Log.d("Auth", "auth exception =  $ex")
 
+                    }
 
                     else -> error("unreachable")
                 }
@@ -89,15 +95,12 @@ class AppAuth @Inject constructor(
 
     }
 
-    fun getAuthService(): AuthorizationService {
-        val authService = AuthorizationService(context!!)
-        Timber.tag("ClientAuth").d("auth service = $authService")
-        return authService
-    }
 
-    private fun getClientAuthentication(): ClientAuthentication =
-        ClientSecretPost(AuthConfig.CLIENT_SECRET)
 
+
+
+private fun getClientAuthentication(): ClientAuthentication =
+    ClientSecretPost(AuthConfig.CLIENT_SECRET)
 
 
 }

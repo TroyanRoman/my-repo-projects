@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "165263173603",
+    "project_id": "ascentapp-bdf67",
+    "storage_bucket": "ascentapp-bdf67.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165263173603:android:7d19b4e862a4965ab5e2d6",
+        "android_client_info": {
+          "package_name": "com.skillbox.ascent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165263173603-f0unfftb8ba9nr9tr347hms76u63dg8u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAX_-h5y78YyvUTvDPUtMiqMh-5tWAgM8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165263173603-f0unfftb8ba9nr9tr347hms76u63dg8u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

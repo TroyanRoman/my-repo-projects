@@ -4,10 +4,9 @@ import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.skillbox.ascent.data.ascent.models.ActivityEntity
-import com.skillbox.ascent.data.ascent.models.AscentActivity
-import com.skillbox.ascent.data.ascent.models.AscentUser
+import com.skillbox.ascent.data.ascent.models.sport_activity.ActivityEntity
 import com.skillbox.ascent.data.ascent.repositories.activities.ActivitiesRepository
+import com.skillbox.ascent.data.ascent.repositories.primary_navigation_repo.PrimaryNavigationRepo
 import com.skillbox.ascent.utils.collectItems
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,13 +19,19 @@ import javax.inject.Inject
 @HiltViewModel
 class ActivitiesViewModel @Inject constructor(
     private val activitiesRepo : ActivitiesRepository,
+    private val navRepo: PrimaryNavigationRepo,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     init {
+
         if (!savedStateHandle.contains(KEY_ACTIVITIES)) {
             savedStateHandle.set(KEY_ACTIVITIES, DEFAULT_ASCENT)
         }
+    }
+
+    fun provideInitialNavigation(onLoginNeeded: () -> Unit) {
+        navRepo.provideLoginNavigation(onLoginNeeded)
     }
 
     private var _ascentJob = MutableLiveData<Job?>()
@@ -46,7 +51,9 @@ class ActivitiesViewModel @Inject constructor(
         savedStateHandle.getLiveData<String>(KEY_ACTIVITIES)
             .asFlow()
             .flatMapLatest {
-                activitiesRepo.getActivitiesList(pageSize = DEFAULT_PAGE_SIZE)
+                val actFlow = activitiesRepo.getActivitiesList(pageSize = DEFAULT_PAGE_SIZE)
+                Log.d("ActivityLog","Activity list flow = ${actFlow}")
+                actFlow
             }
             .cachedIn(viewModelScope)
             .catch {
@@ -59,10 +66,16 @@ class ActivitiesViewModel @Inject constructor(
         }
     }
 
+
+
     override fun onCleared() {
         super.onCleared()
         ascentJob.value?.cancel()
     }
+
+
+
+
 
     companion object {
         private const val KEY_ACTIVITIES = "key_activities"

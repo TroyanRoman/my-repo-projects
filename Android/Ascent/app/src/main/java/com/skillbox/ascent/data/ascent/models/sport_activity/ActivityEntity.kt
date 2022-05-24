@@ -1,4 +1,4 @@
-package com.skillbox.ascent.data.ascent.models
+package com.skillbox.ascent.data.ascent.models.sport_activity
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

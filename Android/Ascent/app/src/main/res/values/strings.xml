@@ -19,14 +19,18 @@
     <string name="username_str">%1$s  %2$s</string>
 
     <string name="alert_dialog_title">Attention!</string>
-    <string name="dialog_action_exit">Yes</string>
-    <string name="dialog_action_noexit">No</string>
-    <string name="dialog_exit_rationale">Do you really want to leave now? </string>
+    <string name="dialog_action_positive">Yes</string>
+    <string name="dialog_action_negative">No</string>
+    <string name="dialog_exit_rationale">Do you want to leave now? </string>
+    <string name="dialog_logout_rationale">Do you want to logout and leave now? </string>
 
     <string name="no_activities_txt">You have no activities </string>
     <string name="allow_ascent_to_use_your_contacts">Allow Ascent to use your contacts</string>
     <string name="allow_ascent_to_use_your_contacts_again">Allow Ascent to use your contacts from app setup</string>
-    <string name="permission_read_contacts_ratio">Do You want to allow Ascent to use your contacts from the book ?</string>
+    <string name="permission_read_contacts_ratio">You should allow Ascent to use your contacts from the book!</string>
+
+    <string name="timeStartActivity">"Set activity start time : </string>
+    <string name="timeEndActivity">"Set activity end time : </string>
 
 
     <string-array name="weights_array">

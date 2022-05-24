@@ -1,25 +1,34 @@
 package com.skillbox.ascent.ui.fragments.sport_activities.adapter
 
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.skillbox.ascent.R
-import com.skillbox.ascent.data.ascent.models.ActivityEntity
-import com.skillbox.ascent.data.ascent.models.ActivityType
+import com.skillbox.ascent.data.ascent.models.sport_activity.ActivityEntity
+import com.skillbox.ascent.data.ascent.models.sport_activity.ActivityType
 import com.skillbox.ascent.databinding.ItemActivityBinding
+import com.skillbox.ascent.utils.getDateString
+import com.skillbox.ascent.utils.setActivityTimeString
 
 
 class ActivityViewHolder(
     private val itemActivityBinding: ItemActivityBinding
 ) : RecyclerView.ViewHolder(itemActivityBinding.root) {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun bind(entity: ActivityEntity) {
+
+        Log.d("ActivityLog", "entity = $entity")
         with(itemActivityBinding) {
             userName.text = entity.userFullName
             distance.text = entity.activity.distance.toString() + " km "
-            activityElapsedTime.text = entity.activity.time.toString()
+            activityElapsedTime.text = entity.activity.time.setActivityTimeString()
             elevation.text = entity.activity.elevation.toString() + " meters "
-            activityStartTime.text = entity.activity.startDate.toString()
+            activityStartTime.text = entity.activity.startDate.getDateString()
+          //  activityStartTime.text = entity.activity.startDate.toString()
             activityName.text = entity.activity.name
             activityType.text = setActivityTypeText(entity)
             Glide.with(avatarImage)

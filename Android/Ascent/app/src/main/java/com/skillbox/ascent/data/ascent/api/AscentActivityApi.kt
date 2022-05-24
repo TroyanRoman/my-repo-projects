@@ -1,6 +1,6 @@
 package com.skillbox.ascent.data.ascent.api
 
-import com.skillbox.ascent.data.ascent.models.AscentActivity
+import com.skillbox.ascent.data.ascent.models.sport_activity.AscentActivity
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -8,7 +8,7 @@ import java.util.*
 
 interface AscentActivityApi {
 
-    @GET("athlete/activities")
+    @GET("api/v3/athlete/activities")
     suspend fun getActivitiesByUser(
         @Query("before") before: Int? = null,
         @Query("after") after: Int? = null,
@@ -16,7 +16,7 @@ interface AscentActivityApi {
         @Query("per_page") perPage: Int = 30
     ): List<AscentActivity>
 
-    @POST("activities")
+    @POST("api/v3/activities")
     suspend fun createActivity(
         @Query("name") name: String,
         @Query("type") type: String,

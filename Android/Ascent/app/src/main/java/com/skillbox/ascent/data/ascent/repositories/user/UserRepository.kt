@@ -8,5 +8,9 @@ interface UserRepository {
 
     suspend fun updateUserIdentity(weight : Float)
 
+    suspend fun showNotificationMessage()
+
+    fun storeUserData(user: AscentUser)
+
 
 }

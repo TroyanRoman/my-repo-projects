@@ -1,5 +1,6 @@
 package com.skillbox.ascent.ui.fragments.login_fragment
 
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.browser.customtabs.CustomTabsIntent
@@ -11,6 +12,7 @@ import com.skillbox.ascent.oauth_data.AuthRepository
 
 import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +28,11 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-   // private val authService: AuthorizationService
+    private val authService: AuthorizationService
 ) : ViewModel() {
 
-    private val authService = authRepository.getAuthService()
-
+   // private val authService = authRepository.getAuthService()
+    
     private val openAuthPageEventChannel = Channel<Intent>(Channel.BUFFERED)
     private val toastEventChannel = Channel<Int>(Channel.BUFFERED)
     private val authSuccessEventChannel = Channel<Unit>(Channel.BUFFERED)
@@ -57,26 +59,7 @@ class LoginViewModel @Inject constructor(
     fun onAuthCodeFailed(exception: AuthorizationException) {
        toastEventChannel.trySendBlocking(R.string.auth_cancelled)
     }
-/*
-    fun onAuthCodeReceived(tokenRequest: TokenRequest) {
-        loadingMutableStateFlow.value = true
-        Timber.tag("TokenStatus").d("token request onAuthCodeReceived VM = $tokenRequest")
-        authRepository.performTokenRequest(
-            tokenRequest = tokenRequest,
-            onComplete = {
-                loadingMutableStateFlow.value = false
-                authSuccessLiveEvent.postValue(Unit)
-            },
-            onError = {
-                loadingMutableStateFlow.value = false
-                toastLiveEvent.postValue(R.string.auth_canceled)
-            },
 
-            authService = authService
-        )
-    }
-
- */
 
     fun onAuthCodeReceived(tokenRequest: TokenRequest) {
         viewModelScope.launch {

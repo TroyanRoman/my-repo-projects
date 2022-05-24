@@ -5,7 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.PagingData
-import com.skillbox.ascent.data.ascent.models.ActivityEntity
+import com.skillbox.ascent.data.ascent.models.sport_activity.ActivityEntity
 import com.skillbox.ascent.ui.fragments.sport_activities.ActivityItemUIState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

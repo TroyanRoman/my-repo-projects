@@ -11,21 +11,7 @@ import javax.inject.Inject
 
 @AuthInterceptorQualifier
 class AuthInterceptor @Inject constructor(private val authTokenPreference: AuthTokenPreference) : Interceptor {
-    /*
-       override fun intercept(chain: Interceptor.Chain): Response {
-           val original = chain.request()
-           val accessToken = authTokenPreference.getRequiredToken(prefKey = AuthConfig.ACCESS_PREF_KEY)
-           val modifiedRequest = original.newBuilder()
-             //  .addHeader("User-Agent", "Humblr 1.001 by/u/RomaTr  com.skillbox.humblr")
-             //  .addHeader("Content-Type", "application/json")
-               .addHeader("Authorization", "Bearer $accessToken")
-               .method(original.method, original.body)
-               .build()
 
-
-           return chain.proceed(modifiedRequest)
-       }
-    */
        override fun intercept(chain: Interceptor.Chain): Response {
            //Timber.tag("AuthInterceptor").d("Intercept")
            Log.d("Auth", "Intercept")

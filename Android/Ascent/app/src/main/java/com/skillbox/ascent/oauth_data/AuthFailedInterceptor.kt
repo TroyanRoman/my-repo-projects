@@ -1,5 +1,6 @@
 package com.skillbox.ascent.oauth_data
 
+import android.util.Log
 import com.skillbox.ascent.di.AppAuth
 import com.skillbox.ascent.di.AuthTokenPreference
 import com.skillbox.ascent.di.networking.AuthFailedInterceptorQualifier
@@ -18,16 +19,18 @@ import javax.inject.Singleton
 class AuthFailedInterceptor @Inject constructor(
     private val appAuth: AppAuth,
     private val authPrefs: AuthTokenPreference,
-    private val authService : AuthorizationService
+    private val authService: AuthorizationService
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
+        Log.d("AuthFailed", "AuthFailed Interceptor proceed")
         val originalRequestTime = System.currentTimeMillis()
         val originalResponse = chain.proceed(chain.request())
-        return originalResponse
+        val resp = originalResponse
             .takeIf { it.code != 401 }
             ?: handleUnauthorizedResponse(chain, originalResponse, originalRequestTime)
-
+        Log.d("AuthFailed", "AuthFailed Interceptor response = $resp")
+        return resp
     }
 
     private fun handleUnauthorizedResponse(
@@ -71,7 +74,9 @@ class AuthFailedInterceptor @Inject constructor(
     private fun handleTokenNeedRefresh(
         chain: Interceptor.Chain
     ): Response? {
-        return if (refreshedToken()) {
+        val tokenIsRefreshed = refreshedToken()
+        Log.d("AuthFailed", " token is refrshed = $tokenIsRefreshed")
+        return if (tokenIsRefreshed) {
             updateTokenAndProceedChain(chain)
         } else {
             null
@@ -84,6 +89,7 @@ class AuthFailedInterceptor @Inject constructor(
         val tokenRefreshed = runBlocking {
             kotlin.runCatching {
                 val refreshToken = authPrefs.getRequiredToken(AuthConfig.REFRESH_PREF_KEY)
+                Log.d("AuthFailed", "token for refresh request = $refreshToken")
                 val refreshRequest = appAuth.getRefreshRequest(refreshToken)
                 appAuth.performTokenRequest(
                     authService,
@@ -92,16 +98,19 @@ class AuthFailedInterceptor @Inject constructor(
             }
                 .getOrNull()
                 ?.let { tokenModel ->
+                    Log.d("AuthFailed", "storing data into prefs = $tokenModel")
                     authPrefs.setStoredData(tokenModel)
                     Timber.tag("RefreshedToken").d("storing data into prefs = $tokenModel")
                     true
                 } ?: false
         }
 
+        Log.d("Auth", "token refreshed = $tokenRefreshed")
+
         if (tokenRefreshed) {
             tokenUpdateTime = System.currentTimeMillis()
         } else {
-            Timber.d("Logout after refresh failed")
+            Log.d("AuthFailed,", "Logout after refresh failed")
         }
         getLatch()?.countDown()
         return tokenRefreshed
@@ -110,6 +119,7 @@ class AuthFailedInterceptor @Inject constructor(
     private fun updateOriginalCallWithNewToken(request: Request): Request {
         val accessToken = authPrefs.getRequiredToken(AuthConfig.ACCESS_PREF_KEY)
         return accessToken.let { newAccessToken ->
+            Log.d("AuthFailed", "new access token = $accessToken")
             request
                 .newBuilder()
                 .header("Authorization", newAccessToken)

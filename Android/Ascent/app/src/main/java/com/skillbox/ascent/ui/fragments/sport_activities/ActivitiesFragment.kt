@@ -9,7 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
@@ -23,6 +25,7 @@ import com.skillbox.ascent.ui.fragments.sport_activities.adapter.ActivitiesAdapt
 import com.skillbox.ascent.databinding.FragmentActivitiesBinding
 import com.skillbox.ascent.di.UserDataPreferences
 import com.skillbox.ascent.oauth_data.AuthConfig
+import com.skillbox.ascent.ui.fragments.hello_fragment.HelloFragmentDirections
 import com.skillbox.ascent.ui.fragments.profile_fragment.ProfileFragment
 import com.skillbox.ascent.ui.fragments.sport_activities.adapter.AscentLoaderStateAdapter
 import com.skillbox.ascent.utils.autoCleared
@@ -43,12 +46,14 @@ class ActivitiesFragment : Fragment(R.layout.fragment_activities) {
     private var activityAdapter: ActivitiesAdapter by autoCleared()
 
 
-
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.provideInitialNavigation {
+            findNavController().navigate(ActivitiesFragmentDirections.actionActivitiesFragment2ToLoginFragment())
+        }
+
+
 
         val navOptions = navigateWithAnimation()
 
@@ -110,6 +115,8 @@ class ActivitiesFragment : Fragment(R.layout.fragment_activities) {
                 viewModel.activityUIState.collectLatest { itemUIState ->
                     when (itemUIState) {
                         is ActivityItemUIState.Success -> {
+                            val data = itemUIState.itemPagingData as PagingData
+                            Log.d("ActivityLog", "activity data = $data")
                             activityAdapter.submitData(itemUIState.itemPagingData as PagingData)
                         }
                         is ActivityItemUIState.Error -> {
@@ -119,6 +126,11 @@ class ActivitiesFragment : Fragment(R.layout.fragment_activities) {
                 }
             }
         }
+    }
+
+    private fun navigateToFragment(action: NavDirections) {
+        val navOptions = navigateWithAnimation()
+        view?.findNavController()?.navigate(action, navOptions)
     }
 
 

@@ -28,6 +28,10 @@ class UserDataPreferences@Inject constructor(@ApplicationContext context : Conte
         return prefs.getString(prefKey, "")?: ""
     }
 
+    fun getRequiredUserId(key: String) : Long {
+        return prefs.getLong(key,0)
+    }
+
     fun setStoredUser(user : AscentUser) {
         prefs.edit()
             .putString(AuthConfig.FULL_NAME_KEY, user.firstName + " " + user.lastName)

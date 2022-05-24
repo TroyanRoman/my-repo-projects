@@ -1,9 +1,8 @@
 package com.skillbox.ascent.application
 
 import android.app.Application
-import androidx.room.Database
 import androidx.viewbinding.BuildConfig
-import com.bumptech.glide.Glide.init
+import com.skillbox.ascent.data.ascent.db.Database
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -15,7 +14,10 @@ class App : Application() {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
+            Database.init(this)
         }
+
+
 
 
 

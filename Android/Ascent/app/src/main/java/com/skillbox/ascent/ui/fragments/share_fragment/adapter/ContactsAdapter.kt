@@ -1,15 +1,14 @@
-package com.skillbox.mycontentprovider.list.adapter
+package com.skillbox.ascent.ui.fragments.share_fragment.adapter
 
-import android.content.Context
 import androidx.recyclerview.widget.DiffUtil
 import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.skillbox.ascent.data.ascent.models.AscentContact
 
 
-class ContactsAdapter : AsyncListDifferDelegationAdapter<AscentContact>(ContactDiffUtilCallback()) {
+class ContactsAdapter(onItemClicked: (contact: AscentContact)-> Unit) : AsyncListDifferDelegationAdapter<AscentContact>(ContactDiffUtilCallback()) {
 
     init {
-        delegatesManager.addDelegate(ContactAdapterDelegate())
+        delegatesManager.addDelegate(ContactAdapterDelegate(onItemClicked))
     }
 
     class ContactDiffUtilCallback : DiffUtil.ItemCallback<AscentContact>() {

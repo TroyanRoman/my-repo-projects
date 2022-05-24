@@ -1,12 +1,9 @@
 package com.skillbox.ascent.data.ascent.repositories.activities
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.skillbox.ascent.data.ascent.api.AscentActivityApi
-import com.skillbox.ascent.data.ascent.models.ActivityEntity
+import com.skillbox.ascent.data.ascent.models.sport_activity.ActivityEntity
 
 
 class ActivitiesPageSource (

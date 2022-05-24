@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skillbox.ascent.data.ascent.models.AscentContact
 import com.skillbox.ascent.data.ascent.repositories.share.ShareRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
+@HiltViewModel
 class ShareViewModel @Inject constructor(
     private val shareRepo : ShareRepository
 ) : ViewModel() {
@@ -21,12 +23,25 @@ class ShareViewModel @Inject constructor(
     fun loadListContacts() {
         viewModelScope.launch {
             try {
-                contactsMutableLiveData.postValue(shareRepo.getAllContacts())
+                val contacts = shareRepo.getAllContacts()
+                Log.d("ContactLog", " Contacts in vm = $contacts ")
+                contactsMutableLiveData.postValue(contacts)
             } catch (t: Throwable) {
-                Log.e("ContactListViewModel", "contact list error", t)
+                Log.e("ContactLog", "contact list error", t)
                 contactsMutableLiveData.postValue(emptyList())
             }
         }
 
+    }
+
+    fun shareLink(contactd: Long, phoneNumber : String) {
+        viewModelScope.launch {
+            try {
+                shareRepo.shareContact(contactd, phoneNumber)
+                Log.d("ShareContact", "Share success")
+            }catch(t: Throwable) {
+                Log.d("ShareContact", "Share error = $t")
+            }
+        }
     }
 }

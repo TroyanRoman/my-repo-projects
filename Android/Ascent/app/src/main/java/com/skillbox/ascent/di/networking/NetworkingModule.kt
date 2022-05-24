@@ -6,10 +6,10 @@ import android.util.Log
 import com.skillbox.ascent.data.ascent.api.AscentActivityApi
 import com.skillbox.ascent.di.AppAuth
 import com.skillbox.ascent.di.AuthTokenPreference
-import com.skillbox.ascent.data.ascent.api.AscentApi
-import com.skillbox.ascent.di.UserDataPreferences
+import com.skillbox.ascent.data.ascent.api.AscentUserApi
 import com.skillbox.ascent.oauth_data.AuthFailedInterceptor
 import com.skillbox.ascent.oauth_data.AuthInterceptor
+import com.skillbox.ascent.oauth_data.AuthRepository
 import com.skillbox.ascent.utils.MoshiDateAdapter
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -64,25 +64,16 @@ class NetworkingModule {
         authService = authService
     )
 
+/*
 
 
+
+
+ */
     @Provides
     @Singleton
-    fun provideMyPreference(@ApplicationContext appContext: Context): AuthTokenPreference {
-        Log.d("Networking","provides auth token prefs")
-        return AuthTokenPreference(appContext)
-    }
-
-    //временно пока не сделаю бд
-    @Provides
-    @Singleton
-    fun provideUserPreferences(@ApplicationContext appContext: Context)
-    = UserDataPreferences(appContext)
-
-    @Provides
-    @Singleton
-    fun providesAuthService(appAuth: AppAuth): AuthorizationService {
-        val authService = appAuth.getAuthService()
+    fun providesAuthService(@ApplicationContext context: Context ): AuthorizationService {
+        val authService = AuthorizationService(context)
         Log.d("Networking","provides auth service")
         return authService
     }
@@ -106,7 +97,7 @@ class NetworkingModule {
         val okHttpClient =  OkHttpClient.Builder()
             .addNetworkInterceptor(loggingInterceptor)
             .addNetworkInterceptor(authInterceptor)
-            .addNetworkInterceptor(authFailedInterceptor)
+           // .addInterceptor(authFailedInterceptor)
             .followRedirects(true)
             .build()
        //Timber.tag("OkHttpClient").d("Provides ok http $okHttpClient")
@@ -132,8 +123,7 @@ class NetworkingModule {
 
     ) : Retrofit {
         val retrofit =  Retrofit.Builder()
-            .baseUrl("https://www.strava.com/api/v3/")
-           // .addConverterFactory(MoshiConverterFactory.create())
+            .baseUrl("https://www.strava.com/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpClient)
             .build()
@@ -143,8 +133,8 @@ class NetworkingModule {
 
     @Provides
     @Singleton
-    fun providesApi(retrofit: Retrofit): AscentApi {
-        val api = retrofit.create<AscentApi>()
+    fun providesUserApi(retrofit: Retrofit): AscentUserApi {
+        val api = retrofit.create<AscentUserApi>()
         Log.d("Networking","Provides ascent api $api")
         return api
     }

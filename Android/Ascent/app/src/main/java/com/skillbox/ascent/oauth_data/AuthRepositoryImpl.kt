@@ -1,175 +1,69 @@
 package com.skillbox.ascent.oauth_data
 
-import android.content.Context
-import android.net.Uri
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
+import com.skillbox.ascent.data.ascent.api.AscentUserApi
 import com.skillbox.ascent.di.AppAuth
 import com.skillbox.ascent.di.AuthTokenPreference
-import com.skillbox.ascent.oauth_data.models.TokenModel
+import com.skillbox.ascent.di.AuthTokenState
+import com.skillbox.ascent.di.qualifiers.DispatcherIO
+import com.skillbox.ascent.oauth_data.models.TokenRefreshResponse
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import net.openid.appauth.*
-import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.suspendCoroutine
 
 
 class AuthRepositoryImpl @Inject constructor(
-    private val context: Context,
+    @DispatcherIO val contextDispatcher: CoroutineDispatcher,
+    private val ascentUserApi: AscentUserApi,
     private val appAuth: AppAuth,
-    private val authPrefs: AuthTokenPreference
+    private val authPrefs: AuthTokenPreference,
+    private val authState : AuthTokenState
 ) : AuthRepository {
 
-
-    /*
-  private val authState = AuthState(
-      AuthorizationServiceConfiguration(
-          Uri.parse(AuthConfig.AUTH_URI),
-          Uri.parse(AuthConfig.TOKEN_URI)
-      )
-  )
-
-  private val serviceConfiguration = AuthorizationServiceConfiguration(
-      Uri.parse(AuthConfig.AUTH_URI),
-      Uri.parse(AuthConfig.TOKEN_URI)
-  )
-
-  override fun getAuthRequest(): AuthorizationRequest {
-
-      val redirectUri = Uri.parse(AuthConfig.CALLBACK_URL)
-
-      return AuthorizationRequest.Builder(
-          serviceConfiguration,
-          AuthConfig.CLIENT_ID,
-          AuthConfig.RESPONSE_TYPE,
-          redirectUri
-      )
-          .setScope(AuthConfig.SCOPE)
-          .build()
-  }
-
-  override fun getAuthService(): AuthorizationService {
-      val authService = AuthorizationService(context)
-      Timber.tag("ClientAuth").d("auth service = $authService")
-      return authService
-  }
-
-
-  @RequiresApi(Build.VERSION_CODES.O)
-  override suspend fun performTokenRequest(
-      authService: AuthorizationService,
-      tokenRequest: TokenRequest,
-  ): TokenModel {
-      return suspendCoroutine { continuation ->
-
-          authService.performTokenRequest(
-              tokenRequest,
-              getClientAuthentication()
-          ) { response, ex ->
-              Timber.tag("TokenStatus").d("response = ${response.toString()}")
-
-              when {
-                  response != null -> {
-                      val token = TokenModel(
-                          accessToken = response.accessToken.orEmpty(),
-                          refreshToken = response.refreshToken.orEmpty(),
-                          idToken = response.idToken.orEmpty()
-                      )
-                      authTokenPreference.setStoredData(token)
-                      //  onComplete()
-                      continuation.resumeWith(Result.success(token))
-                  }
-                  ex != null -> {
-                      continuation.resumeWith(Result.failure(ex))
-                  }
-
-
-                  else -> error("unreachable")
-              }
-          }
-      }
-
-  }
-
-
-  override fun getRefreshRequest(refreshToken: String): TokenRequest {
-
-
-      return TokenRequest.Builder(
-          serviceConfiguration,
-          AuthConfig.CLIENT_ID
-      )
-          .setRedirectUri(redirectUri)
-          .setGrantType(GrantTypeValues.REFRESH_TOKEN)
-          .setScopes(AuthConfig.SCOPE)
-          .setRefreshToken(refreshToken)
-          .build()
-
-  }
-
-
-  override fun authServiceDispose() {
-      AuthorizationService(context).dispose()
-  }
-
-  override fun getCustomTabsIntent(): CustomTabsIntent {
-      return CustomTabsIntent.Builder()
-          .setToolbarColor(ContextCompat.getColor(context, R.color.browser_actions_title_color))
-          .build()
-  }
-
-  private fun getClientAuthentication(): ClientAuthentication =
-      ClientSecretPost(AuthConfig.CLIENT_SECRET)
-
-
------------------------------------------------------
-
-
-     */
     override fun getAuthRequest(): AuthorizationRequest {
         Log.d("Auth","get Auth request clicked")
         return appAuth.getAuthRequest()
     }
 
-    override fun getAuthService(): AuthorizationService {
-        val authService = AuthorizationService(context)
-        Timber.tag("ClientAuth").d("auth service = $authService")
-
-        return authService
+    override fun corruptAccessToken() {
+        authPrefs.corruptAccessToken()
     }
 
-    override fun getCustomTabsIntent(): CustomTabsIntent {
-        return CustomTabsIntent.Builder()
-            .setToolbarColor(ContextCompat.getColor(context, R.color.browser_actions_title_color))
-            .build()
+    override    suspend fun logoutCurrentUser() {
+        withContext(contextDispatcher) {
+            ascentUserApi.logoutCurrentUser(authPrefs.getRequiredToken(AuthConfig.ACCESS_PREF_KEY))
+        }
     }
+
 
     override suspend fun performTokenRequest(
         authService: AuthorizationService,
         tokenRequest: TokenRequest
-    ): TokenModel {
-        return appAuth.performTokenRequest(authService, tokenRequest)
+    )  {
+        val tokenModel = appAuth.performTokenRequest(authService, tokenRequest)
+        authPrefs.setStoredData(tokenModel)
     }
 
-    override fun getRefreshRequest(refreshToken: String): TokenRequest {
-        return appAuth.getRefreshRequest(refreshToken)
+    override suspend fun performNewAccessTokenRequest() {
+        val isCurrentTokenInValid = authState.isCurrentTokenInvalid()
+        if(isCurrentTokenInValid) {
+            withContext(contextDispatcher) {
+                val refreshToken = authPrefs.getRequiredToken(AuthConfig.REFRESH_PREF_KEY)
+                Log.d("AuthRefresh", "refresh token = $refreshToken")
+                val newToken = ascentUserApi.getRefreshedAccessToken(refreshToken = refreshToken).toTokenModel()
+                Log.d("AuthRefresh", "new Access token = $newToken")
+                authPrefs.setStoredData(newToken)
+            }
+        }
     }
 
-    override fun authServiceDispose() {
-        AuthorizationService(context).dispose()
+    private suspend fun getNewAccessToken(refreshToken: String): TokenRefreshResponse {
+       return withContext(contextDispatcher) {
+            ascentUserApi.getRefreshedAccessToken(refreshToken = refreshToken)
+        }
     }
 
-
-    override fun corruptToken() {
-        val logoutData = TokenModel(
-            "corrupted_token",
-            "corrupted_token",
-            "corrupted_token"
-        )
-        authPrefs.setStoredData(logoutData)
-    }
 
 
 }

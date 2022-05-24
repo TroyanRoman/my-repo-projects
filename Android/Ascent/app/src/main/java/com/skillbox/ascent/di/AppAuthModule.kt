@@ -13,5 +13,5 @@ import javax.inject.Singleton
 class AppAuthModule {
     @Provides
     @Singleton
-    fun providesAppAuth(@ApplicationContext context: Context, authTokenPreference: AuthTokenPreference): AppAuth = AppAuth(context,authTokenPreference)
+    fun providesAppAuth(): AppAuth = AppAuth()
 }

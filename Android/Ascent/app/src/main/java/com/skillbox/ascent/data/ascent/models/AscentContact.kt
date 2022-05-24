@@ -9,5 +9,5 @@ data class AscentContact(
     val id : Long,
     val name : String,
     val avatar: Bitmap?,
-    val phoneNumbers : List<String>
+    val phoneNumbers : List<String>?
 ) : Parcelable
