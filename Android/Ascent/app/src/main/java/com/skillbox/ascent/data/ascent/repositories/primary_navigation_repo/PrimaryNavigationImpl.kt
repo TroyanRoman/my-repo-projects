@@ -1,22 +1,22 @@
 package com.skillbox.ascent.data.ascent.repositories.primary_navigation_repo
 
+
 import androidx.datastore.DataStore
 import androidx.datastore.preferences.Preferences
 import androidx.datastore.preferences.preferencesKey
-import com.skillbox.ascent.di.AuthTokenPreference
 import com.skillbox.ascent.di.AuthTokenState
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class PrimaryNavigationImpl @Inject constructor(
     private val authState: AuthTokenState,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
 ) : PrimaryNavigationRepo {
 
     override suspend fun provideNavigation(
         onLoginNeeded: () -> Unit,
         onLoggedIn: () -> Unit,
-        onFirstEnter: () -> Unit
+        onFirstEnter: () -> Unit,
     ) {
         dataStore.data.collectLatest { prefs ->
             val notFirstEntry = prefs[preferencesKey<Boolean>("onBoard")]
@@ -24,9 +24,10 @@ class PrimaryNavigationImpl @Inject constructor(
                 notFirstEntry == true && authState.isCurrentTokenInvalid() -> {
                     onLoginNeeded()
                 }
-                notFirstEntry == true && !authState.isCurrentTokenInvalid() -> {
+                notFirstEntry == true && !authState.isCurrentTokenInvalid()  -> {
                     onLoggedIn()
                 }
+
                 else -> onFirstEnter()
             }
 

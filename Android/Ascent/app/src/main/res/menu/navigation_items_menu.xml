@@ -11,4 +11,9 @@
         android:enabled="true"
         android:icon="@drawable/ic_activities_icn"
         android:title="@string/activities" />
+    <item
+        android:id="@+id/athleteFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_athlete"
+        android:title="Athlete" />
 </menu>

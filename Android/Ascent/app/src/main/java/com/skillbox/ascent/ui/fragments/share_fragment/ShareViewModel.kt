@@ -1,46 +1,52 @@
 package com.skillbox.ascent.ui.fragments.share_fragment
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skillbox.ascent.data.ascent.models.AscentContact
+import com.skillbox.ascent.data.ascent.models.AscentUser
 import com.skillbox.ascent.data.ascent.repositories.share.ShareRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
+
 @HiltViewModel
 class ShareViewModel @Inject constructor(
-    private val shareRepo : ShareRepository
+    private val shareRepo: ShareRepository
 ) : ViewModel() {
 
     private val contactsMutableLiveData = MutableLiveData<List<AscentContact>>()
     val contacts: LiveData<List<AscentContact>>
         get() = contactsMutableLiveData
 
+    private val _isLoadingContacts = MutableLiveData<Boolean>()
+    val isLoadingContacts: LiveData<Boolean>
+        get() = _isLoadingContacts
+
     fun loadListContacts() {
         viewModelScope.launch {
+            _isLoadingContacts.postValue(true)
             try {
-                val contacts = shareRepo.getAllContacts()
-                Log.d("ContactLog", " Contacts in vm = $contacts ")
-                contactsMutableLiveData.postValue(contacts)
+                contactsMutableLiveData.postValue(shareRepo.getAllContacts())
             } catch (t: Throwable) {
-                Log.e("ContactLog", "contact list error", t)
+                Timber.tag("LoadContacts").d("load contacts error = $t")
                 contactsMutableLiveData.postValue(emptyList())
+            }finally {
+                _isLoadingContacts.postValue(false)
             }
         }
 
     }
 
-    fun shareLink(contactd: Long, phoneNumber : String) {
+    fun shareLink( phoneNumber: String, user: AscentUser) {
         viewModelScope.launch {
             try {
-                shareRepo.shareContact(contactd, phoneNumber)
-                Log.d("ShareContact", "Share success")
-            }catch(t: Throwable) {
-                Log.d("ShareContact", "Share error = $t")
+                shareRepo.shareContact( phoneNumber, user)
+
+            } catch (t: Throwable) {
+                Timber.tag("ShareError").d("share contacts error = $t")
             }
         }
     }

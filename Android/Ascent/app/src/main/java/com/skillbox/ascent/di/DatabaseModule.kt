@@ -18,18 +18,18 @@ import javax.inject.Singleton
 class DatabaseModule {
 
     @Provides
-    fun providesActivityKeyDao(database: AscentDatabase) : ActivityRemoteKeyDao {
+    fun providesActivityKeyDao(database: AscentDatabase): ActivityRemoteKeyDao {
         return database.ascentActivityRemoteKeyDao()
     }
 
     @Provides
-    fun providesActivityDao(database: AscentDatabase) : ActivityDao {
+    fun providesActivityDao(database: AscentDatabase): ActivityDao {
         return database.ascentActivityDao()
     }
 
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext appContext : Context) : AscentDatabase {
+    fun provideAppDatabase(@ApplicationContext appContext: Context): AscentDatabase {
         return Room.databaseBuilder(
             appContext,
             AscentDatabase::class.java,

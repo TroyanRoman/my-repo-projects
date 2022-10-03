@@ -6,7 +6,36 @@
         <item name="toolbarNavigationButtonStyle">@style/Toolbar.Button.Navigation.Tinted</item>
     </style>
 
+    <style name="WindowAnimationTransition">
+
+        <item name="android:activityCloseExitAnimation">@anim/exit_anim</item>
+        <item name="android:activityOpenEnterAnimation">@anim/enter_anim</item>
+
+
+    </style>
+
     <style name="Toolbar.Button.Navigation.Tinted" parent="Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="tint">@android:color/white</item>
     </style>
+
+    <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+        <item name="colorPrimary">@color/accent_color_primary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
+    <style name="animation">
+        <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+    </style>
+
+
+
+
 </resources>

@@ -24,7 +24,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/onBoardingTitle"
-        android:textColor="?attr/colorOnSecondary"
         app:layout_constraintTop_toBottomOf="@+id/onBoardingIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +41,6 @@
         style="?attr/textAppearanceBody2"
         android:layout_marginHorizontal="32dp"
         android:gravity="center"
-        android:textColor="?attr/colorOnSecondary"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aperiam corporis deleniti dolor dolores dolorum ducimus et facere hic id illo in, inventore ipsa iste maxime nihil nisi nulla odio odit officiis possimus quaerat unde vitae."/>
 
 

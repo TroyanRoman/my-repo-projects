@@ -10,16 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="@font/roboto"
-            android:text="Create a new activity"
-            android:textSize="27sp"
-            android:textStyle="bold" />
+
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -28,7 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="Name">
+            android:hint="Name"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activityNameInput"
@@ -39,16 +34,30 @@
 
         <com.google.android.material.textfield.TextInputLayout
 
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="Type">
+            android:hint="Type"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
 
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="1dp"
+            app:placeholderTextColor="@color/black"
+            app:endIconDrawable="@drawable/ic_dropdown_icn"
+            app:endIconTint="?attr/colorOnSecondary">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/activityTypeInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:dropDownSelector="@drawable/spinner_dropdown"
+                android:ellipsize="end"
+                android:focusable="false"
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -59,28 +68,42 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="Date">
+            android:hint="Date"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activityDateInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:focusable="false"
                 android:inputType="date" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
 
+            android:id="@+id/timeinputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="Time">
+            android:hint="Time"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/timeInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:cursorVisible="false"
+                android:focusable="false"
                 android:inputType="date" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -91,8 +114,13 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:hint="Distance">
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            android:hint="Distance"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activityDistanceInput"
@@ -108,25 +136,63 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:hint="Description">
+            android:hint="Description *"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:helperText="* optional"
+            app:helperTextEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activityDescInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="date" />
+                android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/addActivityBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Add"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/connectedInfoContainer"
             android:visibility="visible"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/accent_color_primary" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addActivityBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Add"
+                style="@style/ButtonStyleRegular"
+                android:visibility="gone"
+                 />
+
+            <TextView
+                android:id="@+id/fillRationaleTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:text="Please, fill all the fields required for register"
+                style="?attr/textAppearanceHeadline3"
+                android:visibility="visible" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <TextView
+            android:id="@+id/noInternetTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="Please, check Internet connection"
+            android:textColor="@color/snackNegativeTextColor"
+            style="?attr/textAppearanceHeadline3"
+            android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/progress"

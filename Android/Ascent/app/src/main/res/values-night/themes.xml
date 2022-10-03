@@ -1,16 +1,33 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Ascent" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Ascent" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/accent_color_primary</item>
+        <item name="colorPrimaryVariant">@color/accent_color_on_secondary</item>
+        <item name="colorOnPrimary">@color/accent_color_secondary_light</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/accent_color_secondary</item>
+        <item name="colorSecondaryVariant">@color/accent_color_secondary_light</item>
+        <item name="colorOnSecondary">@color/accent_color_secondary_light</item>
+        <item name="colorButtonNormal">@color/accent_color_on_secondary</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="textAppearanceHeadline2">@style/TextAppearance.AscentDesign.User.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.AscentDesign.User.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.AscentDesign.User.Headline4</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.AscentDesign.Body2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.AscentDesign.BodyBold2</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.AscentDesign.Body3</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.AscentDesign.BodySmall</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.AscentDesign.BodySmallRegular</item>
+
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+
+        <item name="shapeAppearanceSmallComponent">@style/MyTextInputLayout</item>
+        <item name="android:buttonBarStyle">@style/ButtonStyleRegular</item>
     </style>
 </resources>

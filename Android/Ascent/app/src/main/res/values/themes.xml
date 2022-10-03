@@ -3,17 +3,42 @@
     <style name="Theme.Ascent" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/accent_color_primary</item>
-        <item name="colorPrimaryVariant">@color/accent_color_primary_light</item>
+        <item name="colorPrimaryVariant">@color/accent_color_on_primary</item>
         <item name="colorOnPrimary">@color/accent_color_on_primary</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/accent_text_color_default</item>
+        <item name="colorSecondaryVariant">@color/accent_color_secondary_light</item>
+        <item name="colorOnSecondary">@color/accent_color_on_secondary</item>
+        <item name="colorOnSurfaceVariant">@color/accent_color_secondary</item>
+        <item name="colorButtonNormal">@color/accent_color_on_primary</item>
+
+        <item name="colorPrimaryContainer">@color/accent_color_on_primary</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <item name="textAppearanceButton">@style/Widget.MaterialComponents.Button.TextButton</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+
+
 
         <!-- Customize your theme here. -->
+        <item name="textAppearanceHeadline2">@style/TextAppearance.AscentDesign.User.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.AscentDesign.User.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.AscentDesign.User.Headline4</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.AscentDesign.Body2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.AscentDesign.BodyBold2</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.AscentDesign.Body3</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.AscentDesign.BodySmall</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.AscentDesign.BodySmallRegular</item>
+
+        <item name="shapeAppearanceSmallComponent">@style/MyTextInputLayout</item>
+        <item name="android:buttonBarStyle">@style/ButtonStyleRegular</item>
+
+
+
+
+
     </style>
 
     <style name="AccentTextButton" parent="Widget.MaterialComponents.Button.TextButton">
@@ -22,4 +47,102 @@
         <item name="android:textColor">@color/accent_color_primary_light</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_dialog</item>
+    </style>
+
+
+    <style name="TextAppearance.AscentDesign.User.Headline2" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">27sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="fontFamily"> @font/roboto</item>
+        <item name="font"> @font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.AscentDesign.User.Headline3" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textSize">19sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="fontFamily"> @font/roboto</item>
+        <item name="font"> @font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.AscentDesign.User.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="fontFamily"> @font/roboto</item>
+        <item name="font"> @font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.AscentDesign.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="fontFamily"> @font/roboto_regular</item>
+        <item name="font"> @font/roboto_regular</item>
+    </style>
+
+    <style name="TextAppearance.AscentDesign.BodyBold2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="fontFamily"> @font/roboto</item>
+        <item name="font"> @font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.AscentDesign.Body3" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="fontFamily"> @font/roboto</item>
+        <item name="font"> @font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.AscentDesign.BodySmall" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="fontFamily"> @font/roboto</item>
+        <item name="font"> @font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.AscentDesign.BodySmallRegular" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="fontFamily"> @font/roboto_regular</item>
+        <item name="font"> @font/roboto_regular</item>
+    </style>
+
+
+    <style name="MyTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="cornerFamily">rounded</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+    </style>
+
+    <style name="ButtonStyleRegular" parent="android:style/Widget.Button">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:background">@drawable/button_background</item>
+    </style>
+
+
+
+
+
+
+
 </resources>

@@ -5,7 +5,7 @@ interface PrimaryNavigationRepo {
     suspend fun provideNavigation(
         onLoginNeeded: () -> Unit,
         onLoggedIn: () -> Unit,
-        onFirstEnter: () -> Unit
+        onFirstEnter: () -> Unit,
     )
 
     fun provideLoginNavigation(

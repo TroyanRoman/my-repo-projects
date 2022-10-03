@@ -1,43 +1,42 @@
 package com.skillbox.ascent.ui.fragments.login_fragment
 
-import android.content.Context
 import android.content.Intent
-import android.util.Log
-import androidx.browser.customtabs.CustomTabsIntent
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skillbox.ascent.R
-import kotlinx.coroutines.channels.Channel
+import com.skillbox.ascent.di.networking.NetworkState
+import com.skillbox.ascent.di.networking.NetworkStatus
 import com.skillbox.ascent.oauth_data.AuthRepository
-
-import dagger.hilt.android.internal.Contexts.getApplication
+import com.skillbox.ascent.oauth_data.AuthTokenRepository
+import com.skillbox.ascent.utils.setupNetworkStateMonitoring
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import net.openid.appauth.AuthorizationException
-import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val authService: AuthorizationService
+    private val authTokenRepository: AuthTokenRepository,
+    private val networkState: NetworkState
 ) : ViewModel() {
 
-   // private val authService = authRepository.getAuthService()
-    
+
     private val openAuthPageEventChannel = Channel<Intent>(Channel.BUFFERED)
     private val toastEventChannel = Channel<Int>(Channel.BUFFERED)
     private val authSuccessEventChannel = Channel<Unit>(Channel.BUFFERED)
 
     private val loadingMutableStateFlow = MutableStateFlow(false)
+
 
     val openAuthPageFlow: Flow<Intent>
         get() = openAuthPageEventChannel.receiveAsFlow()
@@ -51,13 +50,24 @@ class LoginViewModel @Inject constructor(
     val authSuccessFlow: Flow<Unit>
         get() = authSuccessEventChannel.receiveAsFlow()
 
+
+    private val _isConnectedLiveData = MutableLiveData<NetworkStatus>()
+    val isConnectedLiveData: LiveData<NetworkStatus>
+        get() = _isConnectedLiveData
+
+    private var _netMonitoringJob = MutableLiveData<Job?>()
+    private val netMonitoringJob: LiveData<Job?>
+        get() = _netMonitoringJob
+
     override fun onCleared() {
         super.onCleared()
-        authService.dispose()
+        authRepository.disposeAuthService()
+        cancelCheckNetworkJob()
     }
 
-    fun onAuthCodeFailed(exception: AuthorizationException) {
-       toastEventChannel.trySendBlocking(R.string.auth_cancelled)
+
+    fun onAuthCodeFailed() {
+        toastEventChannel.trySendBlocking(R.string.auth_cancelled)
     }
 
 
@@ -65,13 +75,11 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             loadingMutableStateFlow.value = true
             kotlin.runCatching {
-                authRepository.performTokenRequest(
-                    authService = authService,
+                authTokenRepository.performTokenRequest(
                     tokenRequest = tokenRequest
                 )
             }.onSuccess {
                 loadingMutableStateFlow.value = false
-                Log.d("Auth", "on auth code received model = $it")
                 authSuccessEventChannel.send(Unit)
             }.onFailure {
                 loadingMutableStateFlow.value = false
@@ -80,16 +88,21 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun checkConnectionsAndProceed() {
+        _netMonitoringJob.value = this.setupNetworkStateMonitoring(
+            networkState = networkState,
+            isConnectedMutableLiveData = _isConnectedLiveData
+        )
+    }
+
+    fun cancelCheckNetworkJob() {
+        netMonitoringJob.value?.cancel()
+    }
 
 
     fun openLoginPage() {
-        val customTabsIntent = CustomTabsIntent.Builder().build()
-        Log.d("Auth","openloginpage in login VM started")
-        val openAuthPageIntent = authService.getAuthorizationRequestIntent(
-            authRepository.getAuthRequest(),
-            customTabsIntent
-        )
-
-        openAuthPageEventChannel.trySendBlocking(openAuthPageIntent)
+        openAuthPageEventChannel.trySendBlocking(authRepository.getAuthIntent())
     }
+
+
 }

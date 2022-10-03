@@ -1,7 +1,6 @@
 package com.skillbox.ascent.data.ascent.repositories.share
 
 import android.annotation.SuppressLint
-import android.app.PendingIntent
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -11,13 +10,13 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.ContactsContract
 import android.util.Log
-import androidx.navigation.NavDeepLinkBuilder
-import com.skillbox.ascent.R
 import com.skillbox.ascent.data.ascent.models.AscentContact
+import com.skillbox.ascent.data.ascent.models.AscentUser
 import com.skillbox.ascent.di.qualifiers.DispatcherIO
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import java.io.UnsupportedEncodingException
 import javax.inject.Inject
 
 class ShareRepositoryImpl @Inject constructor(
@@ -37,33 +36,45 @@ class ShareRepositoryImpl @Inject constructor(
                 getContactsFromCursor(cursor)
             }.orEmpty()
 
-            Log.d("ContactLog", "contacts list in repo method getAllContacts = $contactsList ")
             contactsList
         }
     }
 
-    override suspend fun shareContact(userId: Long, phoneNumber: String) =
+
+    override suspend fun shareContact(
+        phoneNumber: String, user: AscentUser
+    ) =
         withContext(contextDispatcher) {
-
-            val subject = "Please, checkout my Strava profile :"
-            val link =
-                "https://www.strava.com/athletes/$userId"
-
-
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("smsto:")
-                type = "vnd.android-dir/mms-sms"
-
-
+            val link = getLinkEncoded(user)
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, link)
                 putExtra("address", phoneNumber)
-                putExtra("sms_body", link)
+                type = "text/plain"
             }
+            val shareIntent = Intent.createChooser(sendIntent, null)
 
-
-            val shareIntent = Intent.createChooser(intent, null)
             shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(shareIntent)
         }
+
+    private fun getLinkEncoded(user: AscentUser): String {
+        return try {
+            val url = "https://www.strava.com/athletes/${user.id}"
+            val queryString = "f=${user.firstName}" +
+                    "&l=${user.lastName}&w=${user.weight}&fls=${user.followersCount}" +
+                    "&flg=${user.friendsCount}&g=${user.gender}&c=${user.country}" +
+                    "&a=${user.avatar}"
+            val encodedQueryString = Uri.encode(queryString)
+
+            "$url?$encodedQueryString"
+
+        } catch (e: UnsupportedEncodingException) {
+            Log.d("Exception", "Unsupported exception while encoding = $e")
+            ""
+        }
+    }
+
 
     private fun getContactsFromCursor(cursor: Cursor): List<AscentContact> {
         if (cursor.moveToFirst().not()) return emptyList()
@@ -76,7 +87,6 @@ class ShareRepositoryImpl @Inject constructor(
             val id = cursor.getLong(idIndex)
 
             val phonesList = getPhonesForContact(id)
-            Log.d("PhoneLog", "Phones from contact $id = $phonesList")
             try {
                 val phoneNumber: String = phonesList?.first() ?: ""
                 val thumbnailId = fetchThumbnailId(phoneNumber)
@@ -96,7 +106,7 @@ class ShareRepositoryImpl @Inject constructor(
 
         } while (cursor.moveToNext())
 
-        Log.d("ContactLog", "contacts list from repo method getContactsFromCursor = $contactsList")
+
 
         return contactsList
     }
@@ -116,16 +126,16 @@ class ShareRepositoryImpl @Inject constructor(
             null,
             ContactsContract.Contacts.DISPLAY_NAME + " ASC"
         )
-        val photoId = cursor.use { cursor ->
+        val photoId = cursor.use {
             var thumbnailId: Int? = null
-            if (cursor?.moveToFirst() == true) {
+            if (it?.moveToFirst() == true) {
                 thumbnailId =
-                    cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_ID))
+                    it.getInt(it.getColumnIndex(ContactsContract.Contacts.PHOTO_ID))
             }
             thumbnailId
 
         }
-        Log.d("ContactLog", "photo id from method fetchThumbnailId = $photoId")
+
         return photoId
     }
 
@@ -141,16 +151,16 @@ class ShareRepositoryImpl @Inject constructor(
             null,
             null
         )
-        val avatarBitmap = cursor.use { cursor ->
+        val avatarBitmap = cursor.use {
             var avatar: Bitmap? = null
-            if (cursor?.moveToFirst() == true) {
-                val thumbnailBytes: ByteArray = cursor.getBlob(0)
+            if (it?.moveToFirst() == true) {
+                val thumbnailBytes: ByteArray = it.getBlob(0)
                 avatar =
                     BitmapFactory.decodeByteArray(thumbnailBytes, 0, thumbnailBytes.size)
             }
             avatar
         }
-        Log.d("ContactLog", "avatar bitmap from method fetchAvatar = $avatarBitmap")
+
         return avatarBitmap
     }
 
@@ -165,7 +175,7 @@ class ShareRepositoryImpl @Inject constructor(
         )?.use {
             getPhonesFromCursor(it)
         }.orEmpty()
-        Log.d("ContactLog", "phones list from method getPhonesForContact = $phonesList ")
+
         return phonesList
     }
 
@@ -176,17 +186,11 @@ class ShareRepositoryImpl @Inject constructor(
 
             val numberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
             val number = cursor.getString(numberIndex)
-
-            Log.d("ContactLog", "Number Index from method getPhonesFromCursor = $numberIndex")
-            Log.d("ContactLog", "Number from method getPhonesFromCursor = $number")
-
             list.add(number)
-
-
         } while (cursor.moveToNext())
-        Log.d("ContactLog", "Contacts phones from method getPhonesFromCursor = $list")
         return list
     }
+
 
     companion object {
         private val PHOTO_ID_PROJECTION = arrayOf<String>(

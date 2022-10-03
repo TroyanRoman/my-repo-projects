@@ -11,17 +11,19 @@ data class TokenRefreshResponse(
     @Json(name = "access_token")
     val accessToken : String,
     @Json(name = "expires_at")
-    val expiresAt : Int,
+    val expiresAt : Int? = null,
     @Json(name = "expires_in")
-    val expiresIn : Int,
+    val expiresIn : Int? = null,
     @Json(name = "refresh_token")
     val refreshToken : String
+
 ) : Parcelable {
-    fun toTokenModel() : TokenModel{
+    fun toTokenModel() : TokenModel {
         return TokenModel(
-            accessToken = this.accessToken,
-            expTime = this.expiresAt.toLong(),
-            refreshToken = this.refreshToken,
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            expTime = expiresAt?.toLong()?.times(1000) ?: 0
         )
     }
+
 }

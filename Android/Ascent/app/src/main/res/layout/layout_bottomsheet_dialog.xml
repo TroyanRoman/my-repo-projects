@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    style="@style/AppBottomSheetDialogTheme"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?attr/textAppearanceBody2"
+        android:textAlignment="center"
+        android:layout_marginHorizontal="48dp"
+        android:layout_marginVertical="16dp"
+        android:text="Do yo want to register existing activity or to record a new one?"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/registerBtn"
+        android:layout_width="match_parent"
+        android:layout_marginVertical="16dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="48dp"
+        style="@style/ButtonStyleRegular"
+        android:text="Register activity"
+        />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/recordBtn"
+        android:layout_width="match_parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="48dp"
+        style="@style/ButtonStyleRegular"
+        android:text="Start record"
+        />
+
+</LinearLayout>

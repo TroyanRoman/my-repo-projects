@@ -2,14 +2,12 @@ package com.skillbox.ascent.di.networking
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import com.skillbox.ascent.data.ascent.api.AscentActivityApi
-import com.skillbox.ascent.di.AppAuth
-import com.skillbox.ascent.di.AuthTokenPreference
+import com.skillbox.ascent.di.preferences.AuthTokenPreference
 import com.skillbox.ascent.data.ascent.api.AscentUserApi
-import com.skillbox.ascent.oauth_data.AuthFailedInterceptor
+import com.skillbox.ascent.di.qualifiers.AuthInterceptorQualifier
+import com.skillbox.ascent.di.qualifiers.LoggingInterceptorQualifier
 import com.skillbox.ascent.oauth_data.AuthInterceptor
-import com.skillbox.ascent.oauth_data.AuthRepository
 import com.skillbox.ascent.utils.MoshiDateAdapter
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -33,9 +31,7 @@ class NetworkingModule {
     @Provides
     @LoggingInterceptorQualifier
     fun providesLoggingInterceptor(): Interceptor {
-        val logingInterceptor =  HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-        Log.d("Networking","provides loging interceptor")
-        return  logingInterceptor
+        return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
 
@@ -44,38 +40,14 @@ class NetworkingModule {
     fun providesAuthInterceptor(
         authTokenPreference: AuthTokenPreference
     ): Interceptor {
-        val authInterceptor =  AuthInterceptor(authTokenPreference)
-        Log.d("Networking","provides auth interceptor")
-        return authInterceptor
+        return AuthInterceptor(authTokenPreference)
     }
 
 
-
-    @Provides
-    @AuthFailedInterceptorQualifier
-    fun providesAuthFailedInterceptor(
-        authTokenPreference: AuthTokenPreference,
-        appAuth: AppAuth,
-        authService: AuthorizationService
-
-    ): Interceptor = AuthFailedInterceptor(
-        authPrefs = authTokenPreference,
-        appAuth = appAuth,
-        authService = authService
-    )
-
-/*
-
-
-
-
- */
     @Provides
     @Singleton
-    fun providesAuthService(@ApplicationContext context: Context ): AuthorizationService {
-        val authService = AuthorizationService(context)
-        Log.d("Networking","provides auth service")
-        return authService
+    fun providesAuthService(@ApplicationContext context: Context): AuthorizationService {
+        return AuthorizationService(context)
     }
 
 
@@ -91,18 +63,13 @@ class NetworkingModule {
     fun providesOkHttpClient(
         @LoggingInterceptorQualifier loggingInterceptor: Interceptor,
         @AuthInterceptorQualifier authInterceptor: Interceptor,
-        @AuthFailedInterceptorQualifier authFailedInterceptor: Interceptor
     ): OkHttpClient {
 
-        val okHttpClient =  OkHttpClient.Builder()
+        return OkHttpClient.Builder()
             .addNetworkInterceptor(loggingInterceptor)
             .addNetworkInterceptor(authInterceptor)
-           // .addInterceptor(authFailedInterceptor)
             .followRedirects(true)
             .build()
-       //Timber.tag("OkHttpClient").d("Provides ok http $okHttpClient")
-       Log.d("Networking","Provides ok http $okHttpClient")
-       return okHttpClient
 
     }
 
@@ -115,29 +82,24 @@ class NetworkingModule {
     fun providesMoshi(adapter: MoshiDateAdapter) : Moshi = Moshi.Builder().add(adapter).build()
 
 
-
     @Provides
     fun providesRetrofit(
         okHttpClient: OkHttpClient,
         moshi: Moshi
 
-    ) : Retrofit {
-        val retrofit =  Retrofit.Builder()
+    ): Retrofit {
+
+        return Retrofit.Builder()
             .baseUrl("https://www.strava.com/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpClient)
             .build()
-        Log.d("Networking","Provides retrofit $retrofit")
-        return retrofit
     }
 
     @Provides
     @Singleton
-    fun providesUserApi(retrofit: Retrofit): AscentUserApi {
-        val api = retrofit.create<AscentUserApi>()
-        Log.d("Networking","Provides ascent api $api")
-        return api
-    }
+    fun providesUserApi(retrofit: Retrofit): AscentUserApi = retrofit.create()
+
 
     @Provides
     @Singleton

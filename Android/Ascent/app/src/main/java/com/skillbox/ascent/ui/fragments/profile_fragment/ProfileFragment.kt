@@ -1,152 +1,254 @@
 package com.skillbox.ascent.ui.fragments.profile_fragment
 
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.messaging.FirebaseMessaging
 import com.skillbox.ascent.R
 import com.skillbox.ascent.data.ascent.models.AscentUser
+import com.skillbox.ascent.data.ascent.models.ui_messages.UIMessage
+import com.skillbox.ascent.data.ascent.models.ui_messages.WarningUIMessage
 import com.skillbox.ascent.databinding.FragmentProfileBinding
-import com.skillbox.ascent.utils.getWeightFromSpinner
-import com.skillbox.ascent.utils.launchAndCollectIn
-import com.skillbox.ascent.utils.resetNavGraph
+import com.skillbox.ascent.di.networking.NetworkStatus
+import com.skillbox.ascent.di.preferences.DarkThemePrefs
+import com.skillbox.ascent.utils.setAnimationTransit
+import com.skillbox.ascent.utils.showDialog
 import com.skillbox.ascent.utils.translit
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
-
     private val binding by viewBinding(FragmentProfileBinding::bind)
+
+
     private val viewModel: ProfileViewModel by viewModels()
+    private val handler = Handler(Looper.getMainLooper())
+
+    @Inject
+    lateinit var darkPrefs: DarkThemePrefs
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bindMainInfo()
+        bindUIState()
         handleOnBackPress()
         setWeightAdapter()
         setWeight()
+        checkNetworkConnections()
 
-        viewModel.showNotificationMessage()
+        viewModel.updateMessage.observe(viewLifecycleOwner) {
+            showMessage(it)
+        }
+
+
+
+        binding.logoutBtn.setOnClickListener {
+            showDialog(
+                rationaleTxt = R.string.dialog_logout_rationale,
+                affirmativeAction = {
+                    viewModel.logoutCurrentUser(
+                        onLogoutSuccess = {
+                            val action =
+                                ProfileFragmentDirections.actionProfileFragment2ToLoginFragment()
+                            val animOptions = NavOptions.Builder().setAnimationTransit()
+                            findNavController().navigate(action, animOptions)
+                        })
+                },
+                negativeAction = {}
+            )
+        }
+
+        binding.retryBtn.setOnClickListener {
+            viewModel.checkProfile()
+        }
 
 
     }
 
+
+    private fun checkNetworkConnections() {
+
+        viewModel.checkNetworkConnections()
+        viewModel.isConnected.observe(viewLifecycleOwner) { networkStatus ->
+
+            when (networkStatus) {
+
+                is NetworkStatus.ConnectSuccess -> handler.postDelayed({
+                    if (this.isAdded) binding.notifyLayout.visibility = View.GONE
+                }, 3000)
+
+                is NetworkStatus.ConnectError -> showMessage(
+                    WarningUIMessage(networkStatus.error)
+                )
+
+            }
+        }
+    }
+
+
+    private fun showMessage(message: UIMessage) {
+        with(binding) {
+            notifyLayout.visibility = View.VISIBLE
+            notificationMessage.setTextColor(resources.getColor(message.textColorRes, null))
+            notifyCard.setCardBackgroundColor(
+                resources.getColor(
+                    message.backColorRes,
+                    null
+                )
+            )
+            notificationMessage.text = resources.getText(message.textRes)
+            notificationIcon.setImageResource(message.pictureRes)
+        }
+    }
 
 
     override fun onResume() {
         super.onResume()
-        binding.logoutBtn.setOnClickListener {
-            showExitDialog(exitMessageRes = R.string.dialog_logout_rationale ) {
-                viewModel.logoutCurrentUser{requireActivity().finishAndRemoveTask()}
-            }
+
+        binding.closeNotification.setOnClickListener {
+            binding.notifyLayout.visibility = View.GONE
         }
     }
 
-    private fun bindMainInfo() {
+    override fun onPause() {
+        super.onPause()
+        viewModel.cancelCheckNetworkJob()
+    }
 
-        viewModel.getUserIdentity()
-        viewModel.userLiveData.observe(viewLifecycleOwner) { user ->
+    private fun bindMainInfo(user: AscentUser) {
+        with(binding) {
+            userName.text =
+                getString(R.string.username_str, user.firstName, user.lastName)
+            userMail.text = setUserNameText(user.firstName, user.lastName)
+            followersQty.text = user.friendsCount.toString()
+            followingQty.text = user.friendsCount.toString()
+            country.text = user.country ?: NOT_SPECIFIED
+            gender.text = user.gender.uppercase()
+            weightChooser.hint = when {
+                user.weight == null -> NOT_SPECIFIED
+                user.weight <= LOW_WEIGHT_FLOAT -> LOW_WEIGHT_STRING
+                user.weight >= HIGH_WEIGHT_FLOAT -> HIGH_WEIGHT_STRING
+                else -> user.weight.toString() + " kg"
+            }
 
-            with(binding) {
-                userName.text = getString(R.string.username_str, user.firstName, user.lastName)
-                userMail.text = setUserNameText(user.firstName, user.lastName)
-                followersQty.text = user.friendsCount.toString()
-                followingQty.text = user.friendsCount.toString()
-                country.text = user.country ?: "Not specified"
-                gender.text = user.gender.uppercase()
-                weight.hint = user.weight.toString() + " kg"
 
+            Glide.with(avatarImage)
+                .load(user.avatar)
+                .placeholder(R.drawable.ic_load_avatar)
+                .error(R.drawable.ic_no_avatar)
+                .circleCrop()
+                .into(avatarImage)
+        }
+    }
 
-                Glide.with(avatarImage)
-                    .load(user.avatar)
-                    .placeholder(R.drawable.ic_load_avatar)
-                    .error(R.drawable.ic_no_avatar)
-                    .circleCrop()
-                    .into(avatarImage)
+    private fun viewIsLoadingState(state: ProfileUIState.Loading) {
+        with(binding) {
+            progressBar.isVisible = state.isLoading
+            loadErrorText.visibility = View.GONE
+            retryBtn.visibility = View.GONE
+        }
+    }
 
-                shareBtn.setOnClickListener {
-                    val action =
-                        ProfileFragmentDirections.actionProfileFragment2ToShareFragment(user)
-                    findNavController().navigate(action)
+    private fun viewLoadedSuccessState(user: AscentUser) {
+        with(binding) {
+
+            mainInfoCard.visibility = View.VISIBLE
+            additionalInfoCard.visibility = View.VISIBLE
+            logoutBtn.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
+            retryBtn.visibility = View.GONE
+            bindMainInfo(user)
+
+        }
+    }
+
+    private fun viewLoadedErrorState(state: ProfileUIState.Error) {
+        with(binding) {
+            progressBar.visibility = View.GONE
+            mainInfoCard.visibility = View.GONE
+            additionalInfoCard.visibility = View.GONE
+            logoutBtn.visibility = View.GONE
+            loadErrorText.setText(state.errorMessage)
+            loadErrorText.visibility = View.VISIBLE
+            retryBtn.visibility = View.VISIBLE
+        }
+    }
+
+    private fun bindUIState() {
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.profileUIState.collect { state ->
+
+                    when (state) {
+                        is ProfileUIState.Loading -> viewIsLoadingState(state)
+                        is ProfileUIState.Error -> viewLoadedErrorState(state)
+                        is ProfileUIState.Success -> {
+
+                            val user = state.user
+
+                            viewLoadedSuccessState(user)
+
+                            viewModel.showNotificationMessage()
+                            binding.shareBtn.setOnClickListener {
+
+                                val action =
+                                    ProfileFragmentDirections.actionProfileFragment2ToShareFragment(
+                                        user
+                                    )
+                                val animOptions = NavOptions.Builder().setAnimationTransit()
+                                findNavController().navigate(action, animOptions)
+                            }
+                        }
+                    }
+
                 }
-
             }
-           viewModel.saveUserData(user)
-
         }
     }
+
 
     private fun setWeight() {
-        binding.dropdownWeight.setOnItemClickListener { adapterView, _, position, _ ->
 
-            setWeightData(
-                adapterView
-                    .getItemAtPosition(position)
-                    .toString()
-                    .getWeightFromSpinner()
+        binding.dropdownWeight.setOnItemClickListener { adapterView, _, position, _ ->
+            val dataFromSpinner = adapterView.getItemAtPosition(position).toString()
+            val dataFloat = when (dataFromSpinner) {
+                LOW_WEIGHT_STRING -> LOW_WEIGHT_FLOAT
+                HIGH_WEIGHT_STRING -> HIGH_WEIGHT_FLOAT
+                else -> dataFromSpinner
+                    .filter { it.isDigit() }
+                    .toFloat()
+            }
+
+
+            viewModel.updateUser(
+                dataFloat,
+                onSuccess = {
+                    binding.weightChooser.hint = dataFromSpinner
+                }
             )
         }
     }
 
+
     private fun setUserNameText(userFirstName: String, userLastName: String): String {
         return "@" + userFirstName.translit() + userLastName.translit()
-    }
-
-    private fun setWeightData(data: Float) {
-        viewModel.updateUser(data) { updateHint(data) }
-
-    }
-
-    private fun updateHint(data: Float) {
-        binding.weight.hint = "$data kg"
-    }
-
-
-    private fun showExitDialog(
-        @StringRes exitMessageRes: Int,
-        exitAppAction: () -> Unit
-    ) {
-        val negativeListener = DialogInterface.OnClickListener { dialog, _ ->
-            dialog.dismiss()
-        }
-
-        val positiveListener = DialogInterface.OnClickListener { _, _ ->
-            exitAppAction()
-        }
-
-        val alertDialog = MaterialAlertDialogBuilder(
-            requireContext(),
-            R.style.ThemeOverlay_AppCompat_Dialog_Alert
-        )
-            .setTitle(R.string.alert_dialog_title)
-            .setMessage(exitMessageRes)
-            .setPositiveButton(R.string.dialog_action_positive, positiveListener)
-            .setNegativeButton(R.string.dialog_action_negative, negativeListener)
-
-        alertDialog.show()
-    }
-
-    private fun share(user: AscentUser) {
-
-        Log.d("Share", "current userid = ${user.id}")
-        binding.shareBtn.setOnClickListener {
-            val action = ProfileFragmentDirections.actionProfileFragment2ToShareFragment(user)
-            findNavController().navigate(action)
-        }
     }
 
     private fun setWeightAdapter() {
@@ -162,32 +264,22 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    showExitDialog(exitMessageRes = R.string.dialog_exit_rationale) {
-                        requireActivity().finishAndRemoveTask()
-                    }
+                    showDialog(
+                        rationaleTxt = R.string.dialog_exit_rationale,
+                        affirmativeAction = {
+                            requireActivity().finishAndRemoveTask()
+                        },
+                        negativeAction = {})
                 }
             })
     }
 
-    private fun setMainInfo(profile: AscentUser) {
-        with(binding) {
-            userName.text = getString(R.string.username_str, profile.firstName, profile.lastName)
-            userMail.text = setUserNameText(profile.firstName, profile.lastName)
-            followersQty.text = profile.friendsCount.toString()
-            followingQty.text = profile.friendsCount.toString()
-            country.text = profile.country ?: "Not specified"
-            gender.text = profile.gender.uppercase()
-            weight.hint = profile.weight.toString() + " kg"
-
-
-            Glide.with(avatarImage)
-                .load(profile.avatar)
-                .placeholder(R.drawable.ic_load_avatar)
-                .error(R.drawable.ic_no_avatar)
-                .circleCrop()
-                .into(avatarImage)
-        }
-
-
+    companion object {
+        private const val LOW_WEIGHT_STRING = "Less than 40 kg"
+        private const val LOW_WEIGHT_FLOAT = 39f
+        private const val HIGH_WEIGHT_STRING = "More than 120 kg"
+        private const val HIGH_WEIGHT_FLOAT = 121f
+        private const val NOT_SPECIFIED = "Not specified"
     }
+
 }

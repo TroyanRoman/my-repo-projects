@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/timeDesc"
+            android:text="@string/time_elapsed"
+            app:layout_constraintBottom_toTopOf="@id/timeChronometer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginVertical="8dp"
+            style="@style/TextAppearance.AscentDesign.Body3"/>
+
+
+        <TextView
+            android:id="@+id/timeChronometer"
+            style="@style/TextAppearance.AscentDesign.User.Headline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/defult_timer_value"
+            app:layout_constraintBottom_toTopOf="@+id/actionBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/distanceMeter"
+            style="@style/TextAppearance.AscentDesign.User.Headline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:text="@string/initial_dist_value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/distanceDesc" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/distanceDesc"
+            android:text="@string/distance_passed"
+            android:layout_marginTop="16dp"
+            style="@style/TextAppearance.AscentDesign.Body3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeChronometer"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/continueBtn"
+            style="@style/ButtonStyleRegular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/round_btn"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            android:visibility="gone"
+            tools:icon="@drawable/ic_play_arrow_36"
+            app:layout_constraintEnd_toStartOf="@+id/actionBtn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/actionBtn" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/actionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/round_btn"
+            tools:backgroundTint="@color/snackWarningTextColor"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            android:textSize="18sp"
+            app:icon="@drawable/ic_play_arrow_36"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/continueBtn"
+            app:layout_constraintTop_toBottomOf="@+id/distanceMeter" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/allowLocations"
+            style="@style/ButtonStyleRegular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:text="Allow locations"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeChronometer" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

@@ -7,20 +7,89 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+
+
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:id="@+id/notifyLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/notifyCard"
+                android:layout_width="wrap_content"
+                android:layout_marginVertical="30dp"
+                android:layout_marginHorizontal="8dp"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="8dp"
+                tools:backgroundTint="@color/snackPositiveBackColor"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/customNotificationLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/notificationIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="15dp"
+                        android:layout_marginStart="30dp"
+                        tools:src="@drawable/ic_success_icon" />
+
+                    <TextView
+                        android:id="@+id/notificationMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="15dp"
+                        android:layout_marginStart="30dp"
+                        android:layout_toEndOf="@+id/notificationIcon"
+                        android:textSize="16sp"
+                        tools:text="Success : Success Message"
+                        tools:textColor="@color/snackPositiveTextColor" />
+
+                    <ImageView
+                        android:id="@+id/closeNotification"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginVertical="19dp"
+                        android:layout_marginEnd="15dp"
+
+                        android:src="@drawable/ic_close_icon" />
+
+
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mainInfoCard"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginVertical="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/notifyLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="32dp">
+               >
 
                 <ImageView
                     android:id="@+id/avatarImage"
@@ -36,9 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
+                    style="?attr/textAppearanceHeadline4"
                     app:layout_constraintBottom_toBottomOf="@id/avatarImage"
                     app:layout_constraintStart_toEndOf="@+id/avatarImage"
                     app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +115,7 @@
                     android:id="@+id/userMail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
+                    style="?attr/textAppearanceBodySmall"
                     app:layout_constraintStart_toStartOf="@+id/userName"
                     app:layout_constraintTop_toBottomOf="@id/userName"
                     tools:text="m@ekaterinaPetrova" />
@@ -59,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Following"
-                    android:textSize="13sp"
+                    style="?attr/textAppearanceBodySmall"
                     app:layout_constraintStart_toStartOf="@id/avatarImage"
                     app:layout_constraintTop_toBottomOf="@id/avatarImage" />
 
@@ -68,8 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
+                    style="?attr/textAppearanceBodyLarge"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/followingDesc"
@@ -81,9 +147,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:layout_marginHorizontal="8dp"
                     android:text="Followers"
-                    android:textSize="13sp"
-                    app:layout_constraintStart_toEndOf="@id/avatarImage"
+                    style="?attr/textAppearanceBodySmall"
+                    app:layout_constraintStart_toEndOf="@id/followingDesc"
                     app:layout_constraintTop_toBottomOf="@id/avatarImage" />
 
                 <TextView
@@ -91,8 +158,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
+                    style="?attr/textAppearanceBodyLarge"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/followersDesc"
                     app:layout_constraintTop_toBottomOf="@id/followersDesc"
@@ -104,8 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:text="Share"
-                    android:textColor="@color/white"
-                    app:backgroundTint="@color/accent_color_primary"
+                    style="@style/ButtonStyleRegular"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/followersDesc" />
 
@@ -116,9 +181,14 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/additionalInfoCard"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mainInfoCard"
+            android:layout_marginTop="4dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -132,15 +202,14 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginVertical="12dp"
                     android:text="Gender"
-                    android:textSize="13sp" />
+                    style="?attr/textAppearanceBodySmall" />
 
                 <TextView
                     android:id="@+id/gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
+                    style="?attr/textAppearanceBodyLarge"
                     tools:text="Female" />
 
                 <TextView
@@ -149,7 +218,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:text="Country"
-                    android:textSize="13sp"
+                    style="?attr/textAppearanceBodySmall"
                     app:layout_constraintStart_toEndOf="@id/avatarImage"
                     app:layout_constraintTop_toBottomOf="@id/avatarImage" />
 
@@ -158,8 +227,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
+                    style="?attr/textAppearanceBodyLarge"
                     tools:text="Ukraine" />
 
                 <TextView
@@ -168,20 +236,33 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:text="Weight (edit)"
-                    android:textSize="13sp" />
+                    style="?attr/textAppearanceBodySmall" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/weight"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:id="@+id/weightChooser"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="1dp"
+                    app:endIconDrawable="@drawable/ic_dropdown_icn"
+                    app:endIconTint="?attr/colorOnSecondary"
                     android:hint="Weight">
 
                     <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                         android:id="@+id/dropdownWeight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+
+                        android:cursorVisible="false"
+                        android:dropDownSelector="@drawable/spinner_dropdown"
+                        android:ellipsize="end"
+                        android:focusable="false"
                         android:inputType="none" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -190,15 +271,58 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/logoutBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="Logout"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/accent_color_primary" />
+            android:visibility="gone"
+            android:adjustViewBounds="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/additionalInfoCard"
+            style="@style/ButtonStyleRegular"
+            />
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:indeterminateTint="@color/design_default_color_primary"
+            style="?android:indeterminateProgressStyle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+        <TextView
+            android:id="@+id/loadErrorText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="64dp"
+            android:gravity="center"
+            android:visibility="gone"
+            style="?attr/textAppearanceHeadline4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+             />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/retryBtn"
+            android:visibility="gone"
+            style="@style/ButtonStyleRegular"
+            android:text="@string/retry"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/loadErrorText"
+            android:layout_marginTop="16dp"/>
 
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

@@ -8,20 +8,22 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.skillbox.ascent.R
+import com.skillbox.ascent.utils.setAnimationTransit
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @AndroidEntryPoint
 class HelloFragment : Fragment(R.layout.fragment_hello) {
 
-    private val viewModel : HelloViewModel by viewModels()
+    private val viewModel: HelloViewModel by viewModels()
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var  runnable : Runnable
+    private lateinit var runnable: Runnable
 
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onResume() {
         super.onResume()
-        Timber.tag("Lifecycle").d("HelloFragment OnResume")
 
         val loginFragmentAction = HelloFragmentDirections
             .actionHelloFragmentToLoginFragment()
@@ -33,10 +35,12 @@ class HelloFragment : Fragment(R.layout.fragment_hello) {
         runnable = Runnable {
             viewModel.providePrimaryNavigation(
                 onLoginNeeded = { navigateToFragment(loginFragmentAction) },
-                onLoggedIn = {navigateToFragment(profileFragmentAction)},
-                onFirstEnter = {navigateToFragment(onBoardingFragmentAction)} )
+                onLoggedIn = { navigateToFragment(profileFragmentAction) },
+                onFirstEnter = { navigateToFragment(onBoardingFragmentAction) })
         }
-        handler.postDelayed(runnable,3000)
+
+        handler.postDelayed(runnable, 3000)
+
     }
 
     override fun onPause() {
@@ -44,18 +48,11 @@ class HelloFragment : Fragment(R.layout.fragment_hello) {
         handler.removeCallbacks(runnable)
     }
 
-    private fun navigateToFragment( action : NavDirections) {
-        val navOptions = navigateWithAnimation()
-        view?.findNavController()?.navigate(action, navOptions)
-    }
 
-    private fun navigateWithAnimation(): NavOptions = NavOptions.Builder()
-        .setLaunchSingleTop(true)
-        .setEnterAnim(R.anim.enter_anim)
-        .setExitAnim(R.anim.exit_anim)
-        .setPopEnterAnim(R.anim.pop_enter_anim)
-        .setPopExitAnim(R.anim.pop_exit_anim)
-        .build()
+    private fun navigateToFragment(action: NavDirections) {
+        val animOptions = NavOptions.Builder().setAnimationTransit()
+        view?.findNavController()?.navigate(action, animOptions)
+    }
 
 
 }

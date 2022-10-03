@@ -1,9 +1,7 @@
 package com.skillbox.ascent.data.ascent.api
 
-import com.google.firebase.installations.remote.TokenResult
 import com.skillbox.ascent.data.ascent.models.AscentUser
 import com.skillbox.ascent.oauth_data.AuthConfig
-import com.skillbox.ascent.oauth_data.models.TokenModel
 import com.skillbox.ascent.oauth_data.models.TokenRefreshResponse
 import net.openid.appauth.GrantTypeValues
 import retrofit2.http.*
@@ -20,7 +18,7 @@ interface AscentUserApi {
           @Query("weight") weight : Float
      )
 
-     @POST("oauth/deauthorize")
+      @POST("oauth/deauthorize")
      suspend fun logoutCurrentUser(
          @Query("access_token") accessToken : String
      )

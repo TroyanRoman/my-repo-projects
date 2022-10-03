@@ -47,6 +47,9 @@
         <action
             android:id="@+id/action_profileFragment2_to_shareFragment"
             app:destination="@id/shareFragment" />
+        <action
+            android:id="@+id/action_profileFragment2_to_loginFragment"
+            app:destination="@id/loginFragment" />
 
 
     </fragment>
@@ -63,6 +66,14 @@
         <action
             android:id="@+id/action_activitiesFragment2_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <argument
+            android:name="isUploadSuccess"
+            app:argType="com.skillbox.ascent.utils.MyBooleanData"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_activitiesFragment2_to_startActivityFragment"
+            app:destination="@id/startActivityFragment" />
     </fragment>
     <fragment
         android:id="@+id/createActivityFragment"
@@ -71,6 +82,11 @@
         <action
             android:id="@+id/action_createActivityFragment_to_activitiesFragment2"
             app:destination="@id/activitiesFragment2" />
+        <argument
+            android:name="recordData"
+            app:argType="com.skillbox.ascent.data.ascent.models.sport_activity.ActivityRecordData"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/shareFragment"
@@ -79,5 +95,26 @@
         <argument
             android:name="profile"
             app:argType="com.skillbox.ascent.data.ascent.models.AscentUser" />
+    </fragment>
+    <fragment
+        android:id="@+id/athletesFragment"
+        android:name="com.skillbox.ascent.ui.fragments.athletes_fragment.AthletesFragment"
+        android:label="AthletesFragment">
+        <deepLink
+            android:id="@+id/deepLink3"
+            app:uri="ascent://com.skillbox.ascent/athlete" />
+        <argument
+            android:name="user"
+            app:argType="com.skillbox.ascent.data.ascent.models.AscentUser"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/startActivityFragment"
+        android:name="com.skillbox.ascent.ui.fragments.sport_activities.start_activity.StartActivityFragment"
+        android:label="StartActivityFragment" >
+        <action
+            android:id="@+id/action_startActivityFragment_to_createActivityFragment"
+            app:destination="@id/createActivityFragment" />
     </fragment>
 </navigation>

@@ -10,7 +10,11 @@
 
     <color name="accent_color_onboarding_btn">#505222D0</color>
     <color name="accent_color_primary">#5E48E8</color>
-    <color name="accent_color_primary_light">#887ADE</color>
+    <color name="accent_color_primary_light">#605E48E8</color>
+    <color name="accent_color_on_secondary">#252525</color>
+    <color name="accent_color_secondary_light">#E1E1E1</color>
+    <color name="accent_color_secondary">#B5B5B5</color>#252525
+    <color name="accent_color_on_secondary_light">#C4C4C4</color>
 
     <color name="accent_color_on_primary">#ffffff</color>
     <color name="accent_color_on_primary_light">#E1E1E1</color>
@@ -21,5 +25,15 @@
     <color name="accent_login_button_color">#E1E1E1</color>
     <color name="accent_login_button_color_light">#20808080</color>
     <color name="accent_text_color_btn_exit">#EC615B</color>
+    <color name="accent_color_btn_reset_timer">#ED7717</color>
+
+    <color name="snackPositiveBackColor">#20007B40</color>
+    <color name="snackPositiveTextColor">#007B40</color>
+    <color name="snackNegativeBackColor">#20F03D3E</color>
+    <color name="snackNegativeTextColor">#F03D3E</color>
+    <color name="snackWarningBackColor">#20D84910</color>
+    <color name="snackWarningTextColor">#D84910</color>
+
+
 
 </resources>

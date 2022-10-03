@@ -1,10 +1,9 @@
 package com.skillbox.ascent.di.networking
 
 import android.content.Context
-import android.util.Log
-import com.skillbox.ascent.di.AuthTokenPreference
-import com.skillbox.ascent.di.NotificationPrefs
-import com.skillbox.ascent.di.UserDataPreferences
+import com.skillbox.ascent.di.preferences.AuthTokenPreference
+import com.skillbox.ascent.di.preferences.NotificationPrefs
+import com.skillbox.ascent.di.preferences.UserDataPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,11 +17,9 @@ class PrefsModule {
     @Provides
     @Singleton
     fun provideMyPreference(@ApplicationContext appContext: Context): AuthTokenPreference {
-        Log.d("Networking","provides auth token prefs")
         return AuthTokenPreference(appContext)
     }
 
-    //временно пока не сделаю бд
     @Provides
     @Singleton
     fun provideUserPreferences(@ApplicationContext appContext: Context)

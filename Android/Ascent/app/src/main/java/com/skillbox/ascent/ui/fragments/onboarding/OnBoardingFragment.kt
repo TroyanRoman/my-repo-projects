@@ -1,7 +1,6 @@
 package com.skillbox.ascent.ui.fragments.onboarding
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
 import androidx.datastore.DataStore
 import androidx.datastore.preferences.Preferences
@@ -15,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.skillbox.ascent.R
 import com.skillbox.ascent.databinding.FragmentOnboardingBinding
+import com.skillbox.ascent.utils.setAnimationTransit
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,7 +26,6 @@ class OnBoardingFragment : Fragment(R.layout.fragment_onboarding) {
 
     @Inject
     lateinit var prefs: DataStore<Preferences>
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,18 +59,18 @@ class OnBoardingFragment : Fragment(R.layout.fragment_onboarding) {
                     super.onPageSelected(position)
                     //показываем онбординг при первом запуске приложения
                     if (position == onBoardingAdapter.itemCount - 1) {
-                        val navOptions = navigateWithAnimation()
                         with(binding) {
                             buttonNext.text =
                                 resources.getString(R.string.onboarding_screen_proceed_btn)
                             buttonNext.setOnClickListener {
+                                val animOptions = NavOptions.Builder().setAnimationTransit()
                                 lifecycleScope.launch {
                                     saveOnboarding()
                                 }
                                 findNavController()
                                     .navigate(
                                         OnBoardingFragmentDirections.actionOnBoardingFragmentToLoginFragment(),
-                                        navOptions
+                                        animOptions
                                     )
 
                             }
@@ -98,15 +97,5 @@ class OnBoardingFragment : Fragment(R.layout.fragment_onboarding) {
             val oneTime = true
             it[preferencesKey<Boolean>("onBoard")] = oneTime
         }
-
-
     }
-
-    private fun navigateWithAnimation(): NavOptions = NavOptions.Builder()
-        .setLaunchSingleTop(true)
-        .setEnterAnim(R.anim.enter_anim)
-        .setExitAnim(R.anim.exit_anim)
-        .setPopEnterAnim(R.anim.pop_enter_anim)
-        .setPopExitAnim(R.anim.pop_exit_anim)
-        .build()
 }

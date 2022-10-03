@@ -7,7 +7,7 @@
     <string name="onboarding_screen_headline_1">Welcome to Accent</string>
     <string name="onboarding_screen_headline_2">Friends</string>
     <string name="onboarding_screen_headline_3">Activities</string>
-    <string name="onboarding_screen_next_btn">Skip</string>
+    <string name="onboarding_screen_next_btn">Next</string>
     <string name="onboarding_screen_proceed_btn">Okay</string>
 
     <string name="activities">Activities</string>
@@ -21,16 +21,51 @@
     <string name="alert_dialog_title">Attention!</string>
     <string name="dialog_action_positive">Yes</string>
     <string name="dialog_action_negative">No</string>
-    <string name="dialog_exit_rationale">Do you want to leave now? </string>
-    <string name="dialog_logout_rationale">Do you want to logout and leave now? </string>
+    <string name="dialog_exit_rationale">Do you want to leave now? All unsaved local data will be deleted </string>
+    <string name="dialog_logout_rationale">Do you really want to logout now? All unsaved local data will be deleted </string>
 
     <string name="no_activities_txt">You have no activities </string>
     <string name="allow_ascent_to_use_your_contacts">Allow Ascent to use your contacts</string>
     <string name="allow_ascent_to_use_your_contacts_again">Allow Ascent to use your contacts from app setup</string>
     <string name="permission_read_contacts_ratio">You should allow Ascent to use your contacts from the book!</string>
+    <string name="permission_detect_locations_ratio">You should allow Ascent to use find your current location!</string>
+    <string name="permission_detect_locations_denied">Please, allow app to find your location!</string>
+    <string name="permission_detect_locations_denied_forevr">Finding locations denied!</string>
 
     <string name="timeStartActivity">"Set activity start time : </string>
     <string name="timeEndActivity">"Set activity end time : </string>
+
+    <string name="activityCreatedSuccessTxt">Success : Activity created!</string>
+    <string name="activityCreateFailedTxt">Error : Ascent could not upload activity!</string>
+    <string name="activityLoadFailedTxt">Error : Activities load error!</string>
+    <string name="no_internet">Please, check your internet connection!</string>
+    <string name="no_vpn_status">Please, check your vpn status!</string>
+    <string name="offline_mode">Warning : Profile running in offline mode !</string>
+    <string name="login_btn_txt">Continue with Strava</string>
+    <string name="contacts_not_allowed">Error: Ascent doesn\'t have access to contacts </string>
+    <string name="switch_theme">Switch Theme</string>
+    <string name="profile_title">Profile</string>
+    <string name="activities_title">Activities</string>
+    <string name="add_activities_title">Create new activity</string>
+    <string name="share_title">Share</string>
+    <string name="record_activity">Record new activity</string>
+    <string name="success_weight_update_txt">Weight info updated</string>
+    <string name="error_weight_update_txt">Weight info update error</string>
+    <string name="allow">Allow</string>
+
+    <string name="athletes_name">%1$s %2$s</string>
+    <string name="athletes_weight">%1$s kg</string>
+    <string name="shared_profile">Shared profile</string>
+    <string name="error_loading_user_data_please_retry">Error loading user data, please retry</string>
+    <string name="data_deleted_rationale">All recorded data will be deleted</string>
+    <string name="retry">Retry</string>
+    <string name="defult_timer_value">00:00:00</string>
+    <string name="initial_dist_value">0 m</string>
+    <string name="distance_passed">Distance passed :</string>
+    <string name="time_elapsed">Time elapsed :</string>
+    <string name="pause_for_action_btn_txt">\ Pause   \</string>
+    <string name="finish_for_action_btn_txt">\ Finish    \</string>
+    <string name="start_for_action_btn_txt">\ Start   \</string>
 
 
     <string-array name="weights_array">
@@ -115,7 +150,7 @@
         <item>118 kg</item>
         <item>119 kg</item>
         <item>120 kg</item>
-        <item>More then 120 kg</item>
+        <item>More than 120 kg</item>
     </string-array>
 
 
