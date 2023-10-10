@@ -1,23 +1,34 @@
 package com.example.yourdrive
 
 import android.os.Bundle
-import com.example.yourdrive.core_add.BaseActivity
+import androidx.lifecycle.ViewModelStoreOwner
 import com.example.yourdrive.databinding.ActivityMainBinding
+import com.github.johnnysc.coremvvm.presentation.BackPress
+import com.github.johnnysc.coremvvm.presentation.FragmentFactory
+import com.github.johnnysc.coremvvm.sl.ProvideViewModel
 
-class MainActivity : BaseActivity<MainViewModel.Base>() {
+class MainActivity : BackPress.Activity<MainViewModel>(), ProvideViewModel {
 
-    override val viewModelClass: Class<MainViewModel.Base> = MainViewModel.Base::class.java
+    private lateinit var fragmentFactory: FragmentFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel.observe(this) { screen ->
+
+        fragmentFactory = BaseFragmentFactory(R.id.mainContainer, supportFragmentManager)
+
+        viewModel = provideViewModel(MainViewModel::class.java, this)
+        viewModel.observeNavigation(this) { screen ->
             screen.show(R.id.mainContainer, supportFragmentManager)
         }
-        if (savedInstanceState == null) {
-            viewModel.init()
+        viewModel.observeProgress(this) { visibility ->
+            visibility.apply(binding.progressLayout)
         }
     }
 
+    override fun <T : androidx.lifecycle.ViewModel> provideViewModel(
+        clazz: Class<T>,
+        owner: ViewModelStoreOwner
+    ): T = (application as ProvideViewModel).provideViewModel(clazz, owner)
 }
