@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">YourDrive</string>
+    <string name="login_btn_txt">Login</string>
 </resources>
