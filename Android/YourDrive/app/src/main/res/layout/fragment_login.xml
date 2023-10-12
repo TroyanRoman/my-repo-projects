@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_weight="10"
+
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:scaleType="fitXY"
+            android:background="@color/white"
+            android:src="@drawable/ic_strava_login_patch" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="25"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:adjustViewBounds="true"
+            android:backgroundTint="?attr/colorSecondaryVariant"
+            android:clickable="true"
+
+            android:elevation="8dp"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:paddingStart="84dp"
+            android:paddingEnd="13dp"
+            android:text="@string/login_btn_txt"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:cornerRadius="4dp"
+            app:icon="@drawable/ic_logo_ascent_orange"
+            app:iconGravity="start"
+            app:iconTint="#f3600a" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
