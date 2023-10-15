@@ -25,7 +25,6 @@ interface CoreModule : ManageResources, ProvideDispatchers, ProvideGlobalErrorCo
 
         private val communication = GlobalErrorCommunication.Base()
         private val progress = ProgressCommunication.Base()
-
         private val canGoBack: CanGoBack.Callback = CanGoBack.Callback.Base()
 
         private val retrofitBuilder = ProvideRetrofitBuilder.Base(

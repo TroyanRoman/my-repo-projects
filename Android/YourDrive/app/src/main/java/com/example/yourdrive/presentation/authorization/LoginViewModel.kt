@@ -1,9 +1,7 @@
 package com.example.yourdrive.presentation.authorization
 
-import com.github.johnnysc.coremvvm.presentation.BackPress
+import androidx.lifecycle.ViewModel
 
-class LoginViewModel : BackPress.ViewModel<LoginUi>() {
-    override fun updateCallbacks() {
-        TODO("Not yet implemented")
-    }
+class LoginViewModel : ViewModel() {
+
 }
