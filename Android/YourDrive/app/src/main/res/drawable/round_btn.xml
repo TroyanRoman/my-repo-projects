@@ -6,7 +6,7 @@
     <item android:id="@android:id/mask">
         <shape android:shape="oval">
 
-            <solid android:color="@color/accent_color_primary" />
+            <solid android:color="@color/youdrive_color_primary" />
             <size
                 android:width="80dp"
                 android:height="80dp" />

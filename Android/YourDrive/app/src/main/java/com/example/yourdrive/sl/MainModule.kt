@@ -1,6 +1,7 @@
 package com.example.yourdrive.sl
 
 import com.example.yourdrive.MainViewModel
+import com.example.yourdrive.core_add.YouDriveCore
 import com.github.johnnysc.coremvvm.presentation.CanGoBack
 import com.github.johnnysc.coremvvm.presentation.NavigationCommunication
 import com.github.johnnysc.coremvvm.sl.CoreModule

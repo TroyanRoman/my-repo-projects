@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
+import com.example.yourdrive.core_add.YouDriveCore
 import com.example.yourdrive.sl.MainDependencyContainer
 import com.github.johnnysc.coremvvm.sl.CoreModule
 import com.github.johnnysc.coremvvm.sl.DependencyContainer
@@ -16,7 +17,7 @@ class App : Application(), ProvideViewModel {
 
     override fun onCreate() {
         super.onCreate()
-        val core: CoreModule = CoreModule.Base(this)
+        val core: CoreModule = YouDriveCore(this, true)
         val main = MainDependencyContainer(DependencyContainer.Error(), core)
         viewModelsFactory = ViewModelsFactory(main)
     }
